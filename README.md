@@ -39,6 +39,11 @@ make build
 This command will build the image.
 
 ``` bash
+make build_dev
+```
+Install development tools such as language server and lints 
+
+``` bash
 make buildrm
 ```
 This command will remove the build images.

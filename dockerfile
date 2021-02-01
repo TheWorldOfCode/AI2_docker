@@ -1,5 +1,6 @@
 FROM ubuntu:18.04
 
+ARG DEV=false
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
@@ -12,10 +13,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN useradd -m user -p "$(openssl passwd -1 user)"
 RUN usermod -aG sudo user 
 
-
 COPY ./root /home/user
-
-
 # Extra
 RUN apt update && apt install -y vim \
                                  ssh \
@@ -75,6 +73,14 @@ RUN sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid
 RUN mkdir /var/run/sshd
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+RUN apt update && apt install -y cmake && rm -rf /var/lib/apt/lists/*
+WORKDIR /
+RUN if [ "$DEV" != "false" ]; then apt update && apt install -y cppcheck && rm -rf /var/lib/apt/lists/*; fi
+COPY ./cquery_install.sh /
+RUN if [ "$DEV" != "false" ]; then bash /cquery_install.sh; rm -r cquery; fi
+RUN rm /cquery_install.sh
+               
 
 # Setting user and the workdir
 USER user

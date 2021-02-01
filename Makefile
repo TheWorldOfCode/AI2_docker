@@ -1,8 +1,12 @@
 image = ai2
 container_id_file = ./container_id
+mount ?= $(shell pwd)/execise
 
 build:
 	sudo docker build -t $(image) .
+
+build_dev:
+	sudo docker build --build-arg DEV=true -t $(image) . 
 
 buildrm:
 	sudo docker rmi $(image)
@@ -13,7 +17,7 @@ create:
 		--cidfile $(container_id_file) \
 		--device /dev/dri:/dev/dri \
 		-e DISPLAY \
-		-v $(shell pwd)/execise:/home/user/execise \
+		-v $(mount):/home/user/execise \
 		-e QT_X11_NO_MITSHM=1 \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v ~/.Xauthority:/root/.Xauthority \
@@ -41,4 +45,4 @@ rm:
 enter:
 	sudo docker exec -it $(shell cat $(container_id_file)) bash
 	
-.PHONY: build buildrm create start stop rm enter
+.PHONY: build build_dev buildrm create start stop rm enter

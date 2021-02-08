@@ -64,6 +64,8 @@ RUN cp lpzrobots/ode_robots/simulations/template_amosii/Makefile gorobots_edu/pr
 WORKDIR /home/user/workspace/gorobots_edu/practices/amosii
 RUN export PATH=/home/user/bin/:$PATH && make
 
+# Changing the own of the workspace
+RUN chown -R user:user /home/user/workspace
 # Setting python
 #RUN rm /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python 
 
